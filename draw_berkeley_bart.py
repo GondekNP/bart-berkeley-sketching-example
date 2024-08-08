@@ -7,23 +7,23 @@ architecture.
 
 License: BSD
 """
+
 import sys
 
 import sketchingpy
 
 NUM_ARGS = 2
-USAGE_STR = 'USAGE: python draw_berkeley_bart.py input_loc output_loc'
+USAGE_STR = "USAGE: python draw_berkeley_bart.py input_loc output_loc"
 
-DEFAULT_DATA_LOCATION = 'berkeley_trips.csv'
-BG_COLOR = '#EAEAEA'
-FG_COLOR = '#333333'
-TICK_COLOR = '#FFFFFF'
-TITLE = 'Bart trips from Downtown Berkeley to other stations in March 2024.'
+DEFAULT_DATA_LOCATION = "berkeley_trips.csv"
+BG_COLOR = "#EAEAEA"
+FG_COLOR = "#333333"
+TICK_COLOR = "#FFFFFF"
+TITLE = "Bart trips from Downtown Berkeley to other stations in March 2024."
 WIDTH = 600
 HEIGHT = 600
 LINE_MIN_LEN = 70
 LINE_MAX_LEN = 210
-
 
 
 class Station:
@@ -89,7 +89,7 @@ class DataFacade:
             List of stations from the underlying dataset sorted by total number
             of trips in ascending order.
         """
-        raw_data = self._sketch.get_data_layer().get_csv('berkeley_trips.csv')
+        raw_data = self._sketch.get_data_layer().get_csv("berkeley_trips.csv")
         parsed_data = map(lambda x: self._parse_data_point(x), raw_data)
         return sorted(parsed_data, key=lambda x: x.get_count())
 
@@ -102,10 +102,10 @@ class DataFacade:
         Returns:
             Station object representing the row after parsing.
         """
-        count_str = target['count']
-        count_str_clean = count_str.replace(',', '')
+        count_str = target["count"]
+        count_str_clean = count_str.replace(",", "")
         count = int(count_str_clean)
-        return Station(target['name'], target['code'], count)
+        return Station(target["name"], target["code"], count)
 
 
 class StationVizPresenter:
@@ -137,8 +137,8 @@ class StationVizPresenter:
         """Draw the title at the bottom of the visual."""
         self._sketch.clear_stroke()
         self._sketch.set_fill(FG_COLOR)
-        self._sketch.set_text_font('PublicSans-Regular.otf', 14)
-        self._sketch.set_text_align('center', 'center')
+        self._sketch.set_text_font("PublicSans-Regular.otf", 14)
+        self._sketch.set_text_align("center", "center")
         self._sketch.draw_text(WIDTH / 2, HEIGHT - 20, TITLE)
 
     def _draw_axis(self, max_value):
@@ -155,17 +155,17 @@ class StationVizPresenter:
         self._sketch.translate(WIDTH / 2, HEIGHT / 2)
 
         # Setup some drawing preferences
-        self._sketch.set_text_align('center', 'center')
-        self._sketch.set_ellipse_mode('radius')
+        self._sketch.set_text_align("center", "center")
+        self._sketch.set_ellipse_mode("radius")
 
         # Draw the Bereley text at the center
         self._sketch.clear_stroke()
         self._sketch.set_fill(FG_COLOR)
-        self._sketch.set_text_font('PublicSans-Regular.otf', 20)
-        self._sketch.draw_text(0, 0, 'Berkeley')
+        self._sketch.set_text_font("PublicSans-Regular.otf", 20)
+        self._sketch.draw_text(0, 0, "Berkeley")
 
         # Draw ticks
-        self._sketch.set_text_font('PublicSans-Regular.otf', 10)
+        self._sketch.set_text_font("PublicSans-Regular.otf", 10)
         for value in range(0, max_value + 5000, 5000):
             x = self._get_line_length(max_value, value)
 
@@ -177,7 +177,7 @@ class StationVizPresenter:
             # Draw number of trips as text
             self._sketch.clear_stroke()
             self._sketch.set_fill(FG_COLOR)
-            self._sketch.draw_text(x, 0, f'{value:,}')
+            self._sketch.draw_text(x, 0, f"{value:,}")
 
         # Put the coordinate system back (restore the coordinate system state
         # we saved earlier with push_transform). This undoes the translate.
@@ -192,7 +192,7 @@ class StationVizPresenter:
         self._sketch.translate(WIDTH / 2, HEIGHT / 2)
 
         # Set some drawing preferences
-        self._sketch.set_angle_mode('degrees')
+        self._sketch.set_angle_mode("degrees")
 
         # Determine how much we have to space out stations
         num_lanes = len(records) + 1
@@ -214,8 +214,8 @@ class StationVizPresenter:
             # Draw the name of the station.
             self._sketch.clear_stroke()
             self._sketch.set_fill(FG_COLOR)
-            self._sketch.set_text_font('PublicSans-Regular.otf', 10)
-            self._sketch.set_text_align('left', 'center')
+            self._sketch.set_text_font("PublicSans-Regular.otf", 10)
+            self._sketch.set_text_align("left", "center")
             self._sketch.draw_text(length + 2, 0, record.get_name())
 
         # Put the coordinate system back (restore the coordinate system state
@@ -224,7 +224,7 @@ class StationVizPresenter:
         self._sketch.pop_transform()
 
     def _get_line_length(self, max_value, count):
-        return LINE_MIN_LEN
+        return LINE_MIN_LEN + (LINE_MAX_LEN - LINE_MIN_LEN) * (count / max_value)
 
 
 def main():
@@ -263,5 +263,5 @@ def main():
         sketch.save_image(output_loc)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
